@@ -1,5 +1,4 @@
 import gspread
-import texts
 from loader import SHEET_LINK
 
 class WorkSheet:
