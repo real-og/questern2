@@ -1,6 +1,6 @@
 import redis
 
-def increase_counter(redis_host, redis_port, redis_password, counter_key, increment_by=1):
+def increase_counter(redis_host='localhost', redis_port=6379, redis_password=None, counter_key='counter', increment_by=1):
     try:
         redis_client = redis.Redis(host=redis_host, port=redis_port, password=redis_password)
         current_value = redis_client.get(counter_key)
