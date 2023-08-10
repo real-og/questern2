@@ -1,46 +1,24 @@
 import asyncio
-import aioredis
-import texts
-from loader import SHEET_LINK
+import gspread_asyncio
+from google.oauth2.service_account import Credentials
 
-class RedisClient:
-    def __init__(self, loop):
-        self.loop = loop
-        self.redis = None
+async def write_to_google_sheet():
+    # Load credentials from JSON key file
+    credentials = Credentials.from_authorized_user_file('key.json', scopes=['https://www.googleapis.com/auth/spreadsheets'])
 
-    async def connect(self):
-        self.redis = await aioredis.create_redis_pool('redis://localhost', encoding='utf-8')
+    # Create an asyncio client with the credentials
+    client = await gspread_asyncio.AsyncioGspreadClientManager(credentials).authorize()
 
-    async def close(self):
-        self.redis.close()
-        await self.redis.wait_closed()
+    # Open the spreadsheet by URL or narlme
+    sheet = await client.open_by_url('https://docs.google.com/spreadsheets/d/1YHAJFg60sB_Jv-vxfXJutoUvAsip9XqjEuVg0wVbi98/edit?usp=sharing')
 
-    async def append_user(self, id: str, username: str, full_name: str = 'Без имени'):
-        await self.redis.hmset(id, {'username': username, 'full_name': full_name, 'level': '1'})
+    # Select a worksheet for writing
+    worksheet = await sheet.get_worksheet(0)
 
-    async def change_level(self, id, level):
-        await self.redis.hset(id, 'level', level)
+    # Write data
+    data = ["Value 1", "Value 2", "Value 3"]
+    await worksheet.append_table([data])
 
-    async def change_name(self, id, name):
-        await self.redis.hset(id, 'full_name', name)
-
-    async def change_email(self, id, email):
-        await self.redis.hset(id, 'email', email)
-
-    async def set_lottary_number(self, id, number):
-        await self.redis.hset(id, 'lottary_number', number)
-
-async def main():
-    loop = asyncio.get_event_loop()
-    redis_client = RedisClient(loop)
-
-    await redis_client.connect()
-
-    await redis_client.append_user('user_id', 'username', 'full_name')
-    await redis_client.change_level('user_id', '2')
-    await redis_client.change_name('user_id', 'new_name')
-
-    await redis_client.close()
-
-if __name__ == "__main__":
-    asyncio.run(main())
+# Run the asynchronous function
+loop = asyncio.get_event_loop()
+loop.run_until_complete(write_to_google_sheet())

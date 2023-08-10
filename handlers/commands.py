@@ -5,6 +5,7 @@ import texts
 import keyboards as kb
 import time
 from states import State
+import aiotable
 
 @dp.message_handler(commands=['start'], state="*")
 async def send_welcome(message: types.Message, state: FSMContext):
