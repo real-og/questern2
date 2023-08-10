@@ -1,24 +1,64 @@
-import asyncio
 import gspread_asyncio
 from google.oauth2.service_account import Credentials
+from loader import SHEET_LINK
 
-async def write_to_google_sheet():
-    # Load credentials from JSON key file
-    credentials = Credentials.from_authorized_user_file('key.json', scopes=['https://www.googleapis.com/auth/spreadsheets'])
+link = SHEET_LINK
+def get_creds():
+    creds = Credentials.from_service_account_file("key.json")
+    scoped = creds.with_scopes([
+        "https://spreadsheets.google.com/feeds",
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive",
+    ])
+    return scoped
 
-    # Create an asyncio client with the credentials
-    client = await gspread_asyncio.AsyncioGspreadClientManager(credentials).authorize()
 
-    # Open the spreadsheet by URL or narlme
-    sheet = await client.open_by_url('https://docs.google.com/spreadsheets/d/1YHAJFg60sB_Jv-vxfXJutoUvAsip9XqjEuVg0wVbi98/edit?usp=sharing')
+agcm = gspread_asyncio.AsyncioGspreadClientManager(get_creds)
+async def get_sheet(agcm=agcm):
+    agc = await agcm.authorize()
+    ss = await agc.open_by_url(link)
+    zero_ws = await ss.get_worksheet(0)
+    return zero_ws
 
-    # Select a worksheet for writing
-    worksheet = await sheet.get_worksheet(0)
+async def append_user(id: str, username: str, full_name: str = 'Без имени'):
+        sheet = await get_sheet()
+        cell = await sheet.find(id)
+        if cell is None:
+            await sheet.append_row([id, username, full_name, '1'])
+        else:
+            await sheet.update_cell(cell.row, 4, '1')
 
-    # Write data
-    data = ["Value 1", "Value 2", "Value 3"]
-    await worksheet.append_table([data])
+async def change_level(id, level):
+    sheet = await get_sheet()
+    cell = await sheet.find(id)
+    if cell is None:
+        return
+    row_number = cell.row
+    await sheet.update_cell(row_number, 4, level)
 
-# Run the asynchronous function
-loop = asyncio.get_event_loop()
-loop.run_until_complete(write_to_google_sheet())
+async def change_name(id, name):
+    sheet = await get_sheet()
+    cell = await sheet.find(id)
+    if cell is None:
+        return
+    row_number = cell.row
+    await sheet.update_cell(row_number, 5, name)
+
+async def change_email(id, email):
+    sheet = await get_sheet()
+    cell = await sheet.find(id)
+    if cell is None:
+        return
+    row_number = cell.row
+    await sheet.update_cell(row_number, 6, email)
+
+async def set_lottary_number(id, number):
+    sheet = await get_sheet()
+    cell = await sheet.find(id)
+    if cell is None:
+        return
+    row_number = cell.row
+    await sheet.update_cell(row_number, 7, number)
+
+
+

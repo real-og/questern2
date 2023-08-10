@@ -14,3 +14,4 @@ async def setup_bot_commands(dp):
 if __name__ == '__main__':
     print("Starting Questern bot")
     executor.start_polling(dp, skip_updates=True, on_startup=setup_bot_commands)
+    

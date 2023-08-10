@@ -5,12 +5,13 @@ import texts
 import keyboards as kb
 from states import State
 import table
+import aiotable
 
 @dp.message_handler(state=State.ended_task_6)
 async def send_welcome(message: types.Message, state: FSMContext):
     input = message.text.strip()
     if input == texts.continue_quest:
-        table.sheet.change_level(str(message.from_user.id), '7')
+        await aiotable.change_level(str(message.from_user.id), '7')
         await message.answer(texts.name_task_7)
         await message.answer(texts.task_7_1)
         await message.answer(texts.provide_answer)

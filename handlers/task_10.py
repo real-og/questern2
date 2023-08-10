@@ -6,12 +6,13 @@ import keyboards as kb
 from states import State
 import table
 import logic
+import aiotable
 
 @dp.message_handler(state=State.ended_task_9)
 async def send_welcome(message: types.Message, state: FSMContext):
     input = message.text.strip()
     if input == texts.continue_quest:
-        table.sheet.change_level(str(message.from_user.id), '10')
+        await aiotable.change_level(str(message.from_user.id), '10')
         await message.answer(texts.name_task_10)
         await message.answer(texts.task_10_1)
         await message.answer(texts.provide_answer)
@@ -25,7 +26,7 @@ async def send_welcome(message: types.Message, state: FSMContext):
     input = message.text.strip()
     if input.upper() == texts.task_10_1_ans:
         number = logic.increase_counter()
-        table.sheet.set_lottary_number(str(message.from_user.id), number)
+        aiotable.set_lottary_number(str(message.from_user.id), number)
         await message.answer(texts.right_answer)
         await message.answer(texts.success_message)
         # await message.answer(texts.generate_num_message(number))
