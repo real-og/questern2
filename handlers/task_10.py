@@ -28,9 +28,11 @@ async def send_welcome(message: types.Message, state: FSMContext):
         table.sheet.set_lottary_number(str(message.from_user.id), number)
         await message.answer(texts.right_answer)
         await message.answer(texts.success_message)
-        await message.answer(texts.generate_num_message(number))
+        # await message.answer(texts.generate_num_message(number))
         await State.ended_task_10.set()
     elif input == texts.get_hint:    
-        await message.answer(texts.task_10_1_hint)
+        await message.answer(texts.task_10_1_hint, reply_markup=kb.hint_double_kb)
+    elif input == texts.get_more_hint:
+        await message.answer(texts.task_10_2_hint)
     else:
         await message.answer(texts.wrong_answer, reply_markup=kb.hint_kb)

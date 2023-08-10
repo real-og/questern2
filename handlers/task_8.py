@@ -22,7 +22,7 @@ async def send_welcome(message: types.Message, state: FSMContext):
 @dp.message_handler(state=State.task_8_1)
 async def send_welcome(message: types.Message, state: FSMContext):
     input = message.text.strip()
-    if input.upper() in texts.task_8_1_ans:
+    if input.upper() == texts.task_8_1_ans:
         await message.answer(texts.right_answer)
         await message.answer(texts.ask_for_continue, reply_markup=kb.continue_kb)
         await State.ended_task_8.set()
