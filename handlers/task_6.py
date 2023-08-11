@@ -14,7 +14,7 @@ async def send_welcome(message: types.Message, state: FSMContext):
         await aiotable.change_level(str(message.from_user.id), '6')
         await message.answer(texts.name_task_6)
         await message.answer(texts.task_6_1)
-        await message.answer(texts.provide_answer)
+        await message.answer(texts.provide_answer, reply_markup=kb.hint_location_kb)
         await State.task_6_1.set()
     else:
         await message.answer(texts.use_keyboards, reply_markup=kb.continue_kb)
@@ -28,6 +28,9 @@ async def send_welcome(message: types.Message, state: FSMContext):
             await message.answer_photo(photo, caption=texts.right_answer)
         await message.answer(texts.ask_for_continue, reply_markup=kb.continue_kb)
         await State.ended_task_6.set()
+    elif input == texts.hint_find_code_btn:
+        with open('images/coffe.jpg', 'rb') as photo:
+            await message.answer_photo(photo, caption=texts.provide_answer)
     elif input == texts.get_hint:
         await message.answer(texts.task_6_1_hint)
     else:
