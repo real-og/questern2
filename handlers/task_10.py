@@ -26,7 +26,7 @@ async def send_welcome(message: types.Message, state: FSMContext):
     input = message.text.strip()
     if input.upper() == texts.task_10_1_ans:
         number = logic.increase_counter()
-        aiotable.set_lottary_number(str(message.from_user.id), number)
+        await aiotable.set_lottary_number(str(message.from_user.id), number)
         await message.answer(texts.right_answer)
         await message.answer(texts.success_message)
         # await message.answer(texts.generate_num_message(number))
