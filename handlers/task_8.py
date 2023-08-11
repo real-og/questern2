@@ -31,6 +31,8 @@ async def send_welcome(message: types.Message, state: FSMContext):
         with open('images/print_room.jpg', 'rb') as photo:
             await message.answer_photo(photo, caption=texts.provide_answer)
     elif input == texts.get_hint:    
-        await message.answer(texts.task_8_1_hint)
+        await message.answer(texts.task_8_1_hint, reply_markup=kb.hint_double_kb)
+    elif input == texts.get_more_hint:
+        await message.answer(texts.task_8_2_hint)
     else:
         await message.answer(texts.wrong_answer, reply_markup=kb.hint_kb)

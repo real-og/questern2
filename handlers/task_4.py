@@ -28,8 +28,8 @@ async def send_welcome(message: types.Message, state: FSMContext):
         await message.answer(texts.ask_for_continue, reply_markup=kb.continue_kb)
         await State.ended_task_4.set()
     elif input == texts.hint_find_code_btn:
-        await message.answer(texts.task_4_1_hint_location)
-        await message.answer(texts.provide_answer, reply_markup=kb.hint_kb)
+        with open('images/label.jpg', 'rb') as photo:
+            await message.answer_photo(photo, caption=texts.provide_answer)
     elif input.upper() in texts.task_4_1_ans_wrong:
         await message.answer(texts.task_4_1_correction)
     elif input == texts.get_hint:
