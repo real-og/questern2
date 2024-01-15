@@ -11,7 +11,7 @@ BOT_TOKEN = str(os.environ.get('BOT_TOKEN'))
 SHEET_LINK = str(os.environ.get('SHEET_LINK'))
 
 
-storage = RedisStorage2(db=7)
+storage = RedisStorage2(db=9)
 # storage = MemoryStorage()
 
 bot = Bot(token=BOT_TOKEN, parse_mode="HTML")
